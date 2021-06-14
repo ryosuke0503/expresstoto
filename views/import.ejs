@@ -1,0 +1,40 @@
+<html>
+<body>
+<div id="app">
+    <input type="file" accept=".csv, .xlsx" @change="onFileChange">
+    <button type="button" @click="onSubmit">送信する</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script>
+
+    new Vue({
+        el: '#app',
+        data: {
+            importFile: null
+        },
+        methods: {
+            onFileChange(e) {
+                const files = e.target.files;
+                if(files.length > 0) {
+                    this.importFile = files[0];
+                }
+            },
+            onSubmit() {
+                let formData = new FormData();
+                formData.append('importFile', this.importFile);
+                axios.post('/import', formData)
+                    .then(response => {
+                        if(response.data.result) {
+                            alert('インポート完了!');
+                        }
+
+                    });
+
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>一覧</title>
+        <link rel="stylesheet" href="stylesheets/common.css">
+    </head>
+    <body>
+        <header><h1>一覧</h1></header>
+　       <div class="searchResult">
+            <% if(result==='success'){              %>
+　           <table>
+                <tr><th></th><th>name</th><th>mail</th><th>age</th></tr>
+            <%     var rowIndex = 0;                %>
+            <%     for(var ii in recordList ){      %>
+            <%         rowIndex = rowIndex+1;       %>
+            <%         var record = recordList[ii]; %>
+                <tr>
+                    <th><%= rowIndex    %></th>
+                    <td><%= record.name %></td>
+                    <td><%= record.mail %></td>
+                    <td><%= record.age  %></td>
+　               </tr>
+　           <%     }                                %>
+　           </table>
+            <% } else {                             %>
+                <p><%= message %></p>
+　           <% }                                    %>
+        </div>
+        <div id="app">
+            <input type="file" accept=".csv, .xlsx" @change="onFileChange">
+            <br>
+            <button type="button" @click="onSubmit">送信する</button>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+        <script>
+        
+            new Vue({
+                el: '#app',
+                data: {
+                    importFile: null
+                },
+                methods: {
+                    onFileChange(e) {
+                        const files = e.target.files;
+                        if(files.length > 0) {
+                            this.importFile = files[0];
+                        }
+                    },
+                    onSubmit() {
+                        let formData = new FormData();
+                        formData.append('importFile', this.importFile);
+                        axios.post('/import', formData)
+                            .then(response => {
+                                if(response.data.result) {
+                                    alert('インポート完了!');
+                                }
+                            });
+                    }
+                }
+            });
+        
+        </script>
+    </body>
+</html>
